@@ -1,21 +1,16 @@
-; boot.asm
 BITS 16
 ORG 0x7C00
 
 start:
-    ; setup stack
     xor ax, ax
     mov ss, ax
     mov sp, 0x7C00
 
-    ; save boot drive
     mov [BOOT_DRIVE], dl
 
-    ; set VGA mode 13h (320x200x256)
     mov ax, 0x0013
     int 0x10
 
-    ; load kernel (20 sectors after boot sector)
     mov bx, 0x1000          ; load at 0000:1000
     mov es, bx
     xor bx, bx
@@ -28,12 +23,10 @@ start:
     int 0x13
     jc disk_error
 
-    ; enable A20
     in al, 0x92
     or al, 00000010b
     out 0x92, al
 
-    ; enter protected mode
     cli
     lgdt [gdt_descriptor]
 
@@ -46,9 +39,6 @@ disk_error:
     hlt
     jmp $
 
-; ----------------
-; GDT
-; ----------------
 gdt_start:
     dq 0x0000000000000000     ; null
     dq 0x00CF9A000000FFFF     ; code
@@ -64,9 +54,6 @@ DATA_SEG equ 0x10
 
 BOOT_DRIVE db 0
 
-; ----------------
-; protected mode
-; ----------------
 [BITS 32]
 init_pm:
     mov ax, DATA_SEG
@@ -76,10 +63,10 @@ init_pm:
     mov gs, ax
     mov ss, ax
 
-    mov esp, 0x90000      ; give the kernel a valid stack top
-    and esp, 0xFFFFFFF0   ; (optional) align stack to 16 bytes
+    mov esp, 0x90000
+    and esp, 0xFFFFFFF0
 
-    jmp 0x10000           ; jump to kernel
+    jmp 0x10000
 
 
 
