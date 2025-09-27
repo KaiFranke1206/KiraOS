@@ -11,13 +11,13 @@ start:
     mov ax, 0x0013
     int 0x10
 
-    mov bx, 0x1000          ; load at 0000:1000
+    mov bx, 0x1000
     mov es, bx
     xor bx, bx
-    mov ah, 0x02            ; BIOS read
-    mov al, 20              ; sectors
+    mov ah, 0x02
+    mov al, 20
     mov ch, 0
-    mov cl, 2               ; sector 2
+    mov cl, 2
     mov dh, 0
     mov dl, [BOOT_DRIVE]
     int 0x13
@@ -40,9 +40,9 @@ disk_error:
     jmp $
 
 gdt_start:
-    dq 0x0000000000000000     ; null
-    dq 0x00CF9A000000FFFF     ; code
-    dq 0x00CF92000000FFFF     ; data
+    dq 0x0000000000000000
+    dq 0x00CF9A000000FFFF
+    dq 0x00CF92000000FFFF
 gdt_end:
 
 gdt_descriptor:
